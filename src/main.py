@@ -5,7 +5,8 @@ token_private = "MzY5NTY3ODY1MDMzOTgxOTUy.WeUI5Q.JiSa9mzwFXS_YXWBGG1dHtW0dTc"
 
 client = commands.Bot(command_prefix = '!')
 tmp_chan_list = []
-tmp_chan_template = "Salon de "
+tmp_chan_template = "Salon "
+lst_vowels = "AaEeIiOoUuYy"
 
 @client.event
 async def	on_ready():
@@ -42,7 +43,13 @@ async def	on_voice_state_update(member, before, after):
 	# ET si c'est le salon pere.
 	if (after.channel and member.voice.channel == base_voice):
 		# Definit le nom du channel temporaire en fonction de celui de l'utilisateur.
-		tmp_chan_name = tmp_chan_template + member.name
+		tmp_member_name = member.nick if member.nick else member.name
+		tmp_chan_name_prefix = "de "
+		for x in lst_vowels :
+			if (x == tmp_member_name[0]):
+				tmp_chan_name_prefix = "d'"
+				break
+		tmp_chan_name = tmp_chan_template + tmp_chan_name_prefix + tmp_member_name
 		tmp_chan_id = await member.guild.create_voice_channel(tmp_chan_name, category = member.voice.channel.category)
 		tmp_chan_list.append(tmp_chan_id)
 		await member.move_to(tmp_chan_id)
@@ -62,7 +69,6 @@ async def	on_voice_state_update(member, before, after):
 		for i in tmp_chan_list:
 			if (not i.members):
 				await i.delete()
-				# METTRE LES PERMISSIONS
 				tmp_chan_list.remove(i)
 				break
 
