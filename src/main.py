@@ -5,6 +5,7 @@ token_private = "MzY5NTY3ODY1MDMzOTgxOTUy.WeUI5Q.JiSa9mzwFXS_YXWBGG1dHtW0dTc"
 
 client = commands.Bot(command_prefix = '!')
 tmp_chan_list = []
+tmp_chan_template = "Salon de "
 
 @client.event
 async def	on_ready():
@@ -32,37 +33,37 @@ async def	leave(ctx):
 	else:
 		await ctx.send("Je ne me trouve pas dans un salon vocal !")
 
+# Methode qui permet de creer des salons temporaires en se connectant dans un salon de base bien defini.
+# A l'avenir, l'utilisateur pourra modifier l'ID de ce salon.
 @client.event
 async def	on_voice_state_update(member, before, after):
-	# Methode qui permet de creer des salons temporaires en se connectant
-	# dans un salon de base bien defini. A l'avenir, l'utilisateur pourra modifier
-	# l'ID de ce salon.
 	base_voice = client.get_channel(698880918835822644)
-	# base_voice = client.get_channel(838129268235567116)
 	# Check si, apres voice_state_update, l'utilisateur se trouve encore dans un salon
-	# ET si ce n'est pas des salons temporaires.
-	# if (after.channel and after.channel not in tmp_chan_list):
+	# ET si c'est le salon pere.
 	if (after.channel and member.voice.channel == base_voice):
-		# print('OK')
-		# Definit le nom du channel temporaire en fonction de celui de
-		# l'utilisateur.
-		tmp_chan_name = "Chambre de " + member.name
+		# Definit le nom du channel temporaire en fonction de celui de l'utilisateur.
+		tmp_chan_name = tmp_chan_template + member.name
 		tmp_chan_id = await member.guild.create_voice_channel(tmp_chan_name, category = member.voice.channel.category)
 		tmp_chan_list.append(tmp_chan_id)
 		await member.move_to(tmp_chan_id)
-		# print(tmp_chan_list)
-		"""
-		elif (member.voice.channel in tmp_chan_list):
-			print("TEST BACK")
-		else:
-			print('NOT OK')
-		"""
-	if (before.channel in tmp_chan_list and before.channel != after.channel):
+		await tmp_chan_id.set_permissions(member,	view_channel = True,
+													manage_channels = True,
+													manage_permissions = True,
+													create_instant_invite = True,
+													connect = True,
+													speak = True,
+													stream = True,
+													use_voice_activation = True,
+													priority_speaker = True,
+													mute_members = True,
+													deafen_members = True,
+													move_members = True)
+	elif (before.channel in tmp_chan_list and before.channel != after.channel):
 		for i in tmp_chan_list:
 			if (not i.members):
 				await i.delete()
+				# METTRE LES PERMISSIONS
 				tmp_chan_list.remove(i)
-				print("SUPP OK")
 				break
 
 @client.command()
