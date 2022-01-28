@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import json
 
 class tmp_channels(commands.Cog):
 
@@ -8,11 +9,14 @@ class tmp_channels(commands.Cog):
 
 	tmp_chan_list = []
 	tmp_chan_template = "Salon "
-	lst_vowels = "AaEeIiOoUuYy"
+
+	def get_vowels(self):
+		with open("rsc/settings.json", 'r') as fd:
+			settings = json.load(fd)
+		return settings["vowels_list"]
 
 	# Methode qui permet de creer des salons temporaires en se connectant dans un salon de base bien defini.
 	# A l'avenir, l'utilisateur pourra modifier l'ID de ce salon.
-	# @client.event
 	@commands.Cog.listener()
 	async def	on_voice_state_update(self, member, before, after):
 		base_voice = self.client.get_channel(698880918835822644)
@@ -22,7 +26,8 @@ class tmp_channels(commands.Cog):
 			# Definit le nom du channel temporaire en fonction de celui de l'utilisateur.
 			tmp_member_name = member.nick if member.nick else member.name
 			tmp_chan_name_prefix = "de "
-			for x in self.lst_vowels :
+			vowels_list = self.get_vowels()
+			for x in vowels_list:
 				if (x == tmp_member_name[0]):
 					tmp_chan_name_prefix = "d'"
 					break
