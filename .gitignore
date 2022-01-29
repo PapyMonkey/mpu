@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Configuration files
+rsc/config.json
+rsc/database.json
