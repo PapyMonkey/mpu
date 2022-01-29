@@ -1,4 +1,4 @@
-from src.dataIO import dataIO
+from dataIO import dataIO
 import os
 
 config_FILEPATH = os.getcwd() + '/rsc/config.json'
