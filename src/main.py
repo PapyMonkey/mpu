@@ -1,14 +1,13 @@
+from config import config
+import os
 import discord 
 from discord.ext import commands
-import os
 
-token_private = "MzY5NTY3ODY1MDMzOTgxOTUy.WeUI5Q.JiSa9mzwFXS_YXWBGG1dHtW0dTc"
-
-client = commands.Bot(command_prefix = '!')
+client = commands.Bot(command_prefix = config["prefix"])
 
 @client.event
 async def	on_ready():
-    # await client.change_presence(status=discord.Status.idle, activity=discord.Streaming(name='Minecraft', url='https://www.twitch.tv/jackmanifoldtv'))
+    await client.change_presence(status=discord.Status.do_not_disturb, activity=discord.Game("https://github.com/PapyMonkey/mpu"))
     print("\n*-------------------------------------------------------*")
     print("|\t\t\t\t\t\t\t|")
     print(f"| {client.user} has been successfully connected to Discord ! |")
@@ -25,4 +24,4 @@ if (__name__ == '__main__'):
     for extension in initial_extensions:
         client.load_extension(extension)
 
-client.run(token_private)
+client.run(config["access_token"])
