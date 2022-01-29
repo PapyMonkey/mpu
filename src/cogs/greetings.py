@@ -8,7 +8,7 @@ class greetings(commands.Cog):
 
 	@commands.command()
 	async def	hello(ctx):
-		await ctx.send("Coucou !")
+		await ctx.send("Hi !")
 
 def setup(client):
 	client.add_cog(greetings(client))
