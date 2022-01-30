@@ -1,12 +1,17 @@
 import json
 
-class DataIO:
-	def load_json(self, filename):
-		"""Loads json file"""
-		return self._read_json(filename)
+class DataIO():
+	def	_read_json(self, filename):
+		with open(filename, encoding='utf-8', mode="r") as f:
+			data = json.load(f)
+		return data
 
-	def is_valid_json(self, filename):
-		"""Verifies if json file exists / is readable"""
+	def	_save_json(self, filename, data):
+		with open(filename, encoding='utf-8', mode="w") as f:
+			json.dump(data, f, indent=4 ,sort_keys=True, separators=(',',' : '))
+		return data
+
+	def	is_valid_json(self, filename):
 		try:
 			self._read_json(filename)
 			return True
@@ -14,15 +19,5 @@ class DataIO:
 			return False
 		except json.decoder.JSONDecodeError:
 			return False
-
-	def _read_json(self, filename):
-		with open(filename, encoding='utf-8', mode="r") as f:
-			data = json.load(f)
-		return data
-
-	def _save_json(self, filename, data):
-		with open(filename, encoding='utf-8', mode="w") as f:
-			json.dump(data, f, indent=4 ,sort_keys=True, separators=(',',' : '))
-		return data
 
 dataIO = DataIO()

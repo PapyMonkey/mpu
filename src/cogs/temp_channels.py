@@ -68,7 +68,7 @@ class tmp_channels(commands.Cog):
 																mute_members = True,
 																deafen_members = True,
 																move_members = True)
-					break
+					# break
 				child_chan_list = self.get_child_chan_list(member.guild, parent_chan)
 				if (before.channel.id in child_chan_list and (not after.channel or before.channel.id != after.channel.id)):
 					for id in child_chan_list:
@@ -76,8 +76,8 @@ class tmp_channels(commands.Cog):
 						if (not channel.members):
 							await channel.delete()
 							self.rm_child_chan_list(member.guild, parent_chan, channel)
-							break
-					break
+							# break
+					# break
 		except:
 			return
 

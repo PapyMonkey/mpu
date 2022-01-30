@@ -18,7 +18,6 @@ initial_extensions = []
 
 for filename in os.listdir('src/cogs'):
     if (filename.endswith('.py')):
-        print("OK")
         initial_extensions.append("cogs." + filename[:-3])
 
 if (__name__ == '__main__'):

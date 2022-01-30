@@ -4,7 +4,7 @@ import os
 config_FILEPATH = os.getcwd() + '/rsc/config.json'
 
 if dataIO.is_valid_json(config_FILEPATH):
-    config = dataIO.load_json(config_FILEPATH)
+    config = dataIO._read_json(config_FILEPATH)
 else:
     config = {
 		"access_token": os.environ["ACCESS_TOKEN"],

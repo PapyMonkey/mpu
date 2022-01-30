@@ -130,4 +130,4 @@ dmypy.json
 
 # Configuration files
 rsc/config.json
-rsc/database.json
+rsc/db_*.json
