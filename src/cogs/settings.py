@@ -3,8 +3,8 @@ from dataIO import dataIO
 from utils import utils
 import inspect
 import os
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 class settings(commands.Cog):
 

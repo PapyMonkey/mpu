@@ -1,13 +1,13 @@
 from config import config
 import os
-import discord 
-from discord.ext import commands
+import nextcord 
+from nextcord.ext import commands
 
 client = commands.Bot(command_prefix = config["prefix"])
 
 @client.event
 async def	on_ready():
-    await client.change_presence(status=discord.Status.do_not_disturb, activity=discord.Game("https://github.com/PapyMonkey/mpu"))
+    await client.change_presence(status=nextcord.Status.do_not_disturb)
     print("\n*-------------------------------------------------------*")
     print("|\t\t\t\t\t\t\t|")
     print(f"| {client.user} has been successfully connected to Discord ! |")
