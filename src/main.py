@@ -2,7 +2,7 @@ from config import config
 import os
 import discord 
 from discord.ext import commands
-
+MAINFOLDER = os.path.dirname(__file__)
 client = commands.Bot(command_prefix = config["prefix"])
 
 @client.event
@@ -15,8 +15,7 @@ async def	on_ready():
     print("*-------------------------------------------------------*\n")
 
 initial_extensions = []
-
-for filename in os.listdir('src/cogs'):
+for filename in os.listdir(f'{MAINFOLDER}/cogs'):
     if (filename.endswith('.py')):
         initial_extensions.append("cogs." + filename[:-3])
 
