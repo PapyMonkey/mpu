@@ -2,80 +2,13 @@ import discord
 from discord.commands import SlashCommandGroup
 from discord.ext import commands, pages
 from media import radarr
+from view.dropdown import DropdownMovieView 
 
 class MediaCmds(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.radarr_client = radarr.RadarrClient()
 
-
-    class ConfirmationView(discord.ui.View):
-        def __init__(self):
-            super().__init__()
-            self.value = None
-
-        @discord.ui.button(label='Confirm', style=discord.ButtonStyle.green, emoji='✅')
-        async def confirm_callback(
-            self,
-            button: discord.ui.Button,
-            interaction: discord.Interaction
-        ) -> None:
-            await interaction.response.send_message("Confirming...", ephemeral=True)
-            self.value = True
-            self.stop()
-
-        @discord.ui.button(label='Cancel', style=discord.ButtonStyle.red, emoji='⛔')
-        async def cancel_callback(
-            self,
-            button: discord.ui.Button,
-            interaction: discord.Interaction
-        ) -> None:
-            await interaction.response.send_message("Canceling...", ephemeral=True)
-            self.value = False
-            self.stop()
-
-    class DropdownSelectMovie(discord.ui.Select):
-        """
-        A custom dropdown menu component for selecting a movie.
-
-        This class extends the `Select` component provided by the `discord.ext.commands` module.
-        It creates a dropdown menu specifically designed for selecting a single movie.
-        Attributes:
-            options_list (list): A list of options to populate the dropdown menu with.
-
-        Methods:
-            callback(interaction): An asynchronous callback method triggered when an option is selected.
-                It is called with the selected `interaction` object.
-        """
-
-        def __init__(
-            self,
-            instance_parent,
-            options_list: list,
-            embed_list: list
-            ) -> None:
-            super().__init__(
-                placeholder = "Select the movie...",
-                min_values = 1,
-                max_values = 1,
-                options = options_list,
-                row = 2
-            )
-            self.instance_parent = instance_parent
-            self.embed_list = embed_list 
-
-        async def callback(
-            self,
-            interaction: discord.Interaction
-            ) -> None:
-            index = int(self.values[0])
-            await interaction.response.send_message(
-                content = "Are you sure you want add this movie ?",
-                embed = self.embed_list[index],
-                ephemeral = True,
-                view = self.instance_parent.ConfirmationView()
-            )
-        
     # --------------------------------------------------------------------------
     # Methods
 
@@ -187,11 +120,16 @@ class MediaCmds(commands.Cog):
 
     media = SlashCommandGroup(
         "media",
-        "Commands for managing Plex Media Server with Radarr/Sonarr APIs."
+        "Commands for managing Plex Media Server with Arr's APIs."
+    )
+    radarr = media.create_subgroup(
+        "movie",
+        "Radarr (movies) commands"
     )
 
-    @media.command(name="search_movie")
-    async def search_movie(
+    @radarr.command(name="search")
+    @discord.option("search", description="Enter the movie you are looking for")
+    async def movie_search(
             self,
             ctx: discord.ApplicationContext,
             search: str):
@@ -204,33 +142,30 @@ class MediaCmds(commands.Cog):
             ephemeral=False
         )
 
-    @media.command(name="add_movie")
-    async def add_movie(
+    @radarr.command(name="add")
+    @discord.option("search", description="Enter the movie you are looking for")
+    async def movie_add(
             self,
             ctx: discord.ApplicationContext,
             search: str):
+        """Search a movie and add it to the Plex Media Server."""
         paginator = self.__create_pages_search(search)
         await paginator.respond(
             ctx.interaction,
             ephemeral=False
         )
+        view = DropdownMovieView(
+            self.dropdown_options_list,
+            self.embed_list
+        )
         await ctx.respond(
             "Choose the movie you want to add to the Plex library :",
-            view = discord.ui.View(self.DropdownSelectMovie(
-                self,
-                self.dropdown_options_list,
-                self.embed_list
-            ))
+            view = view
         )
-
-    @media.command(name="test_radarr_json")
-    async def radarr_test(
-            self,
-            ctx: discord.ApplicationContext,
-            search: str):
-        import json
-        json_array = self.radarr_client.search_movie(search)
-        print(json.dumps(json_array[0], indent=4))
+        await view.wait()
+        match view.value:
+            case True:
+                self.radarr_client.add_movie(self.radarr_client.search_array[view.choice])
 
 def setup(bot):
     bot.add_cog(MediaCmds(bot))
