@@ -1,6 +1,7 @@
 from decouple import config
-from pyarr import RadarrAPI
 from datetime import datetime
+from pyarr import RadarrAPI
+from pyarr.types import JsonObject
 
 class MovieObj:
 
@@ -54,12 +55,31 @@ class RadarrClient:
             host_url = self.url,
             api_key = self.api_key
         )
+        self.quality_profiles = self.client.get_quality_profile()
 
     def search_movie(self, search: str):
-        return self.client.lookup_movie(term = search)
+        self.search_array = self.client.lookup_movie(term = search)
+        return self.search_array
     
     def def_array_movies(self, search: str):
         self.movies_list = []
         json_array = self.search_movie(search)
         for array in json_array:
             self.movies_list.append(MovieObj(array))
+
+    def get_free_root_folder(self) -> None:
+        self.root_folder_list = self.client.get_root_folder()
+
+    def add_movie(
+        self,
+        movie
+        ) -> JsonObject:
+        # import json
+        # print(json.dumps(RadarrAPI.get_root_folder, indent=4))
+        # print(self.client.get_root_folder())
+        self.get_free_root_folder()
+        return self.client.add_movie(
+            movie = movie,
+            quality_profile_id = self.quality_profiles[0].get('id'),
+            root_dir = self.root_folder_list[0].get('path')
+        )
