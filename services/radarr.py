@@ -4,7 +4,7 @@ from pyarr import RadarrAPI
 from pyarr.types import JsonObject
 
 class MovieObj:
-
+    
     def __init__(self, movie_json):
         # General overview
         self.title = f"{movie_json.get('title', None)} ({movie_json.get('year', None)})"

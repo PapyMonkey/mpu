@@ -11,7 +11,9 @@
         "parent_channels": {
             "931979557945352233": {
                 "name_template": "Gaming room",
-                "temporary_channels": []
+                "temporary_channels": [
+                    1143477781662015528
+                ]
             }
         }
     }
