@@ -1,8 +1,8 @@
 import discord
 from discord.commands import SlashCommandGroup
 from discord.ext import commands, pages
-from media import radarr
-from view.dropdown import DropdownMovieView 
+from services import radarr
+from utils.view import dropdown
 
 class MediaCmds(commands.Cog):
     def __init__(self, bot):
@@ -20,7 +20,7 @@ class MediaCmds(commands.Cog):
         """Define an option (label/description/number) for the dropdown menu."""
         return discord.SelectOption(
             label = movie_obj.title,
-            description = index, # TODO : remove in the end
+            description = index,  # TODO : remove in the end
             value = index,
             emoji = None,
             default = False
@@ -154,7 +154,7 @@ class MediaCmds(commands.Cog):
             ctx.interaction,
             ephemeral=False
         )
-        view = DropdownMovieView(
+        view = dropdown.DropdownMovieView(
             self.dropdown_options_list,
             self.embed_list
         )

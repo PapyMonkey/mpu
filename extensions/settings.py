@@ -6,6 +6,8 @@ import os
 import discord
 from discord.ext import commands
 
+# BUG : Not working
+
 class settings(commands.Cog):
 
 	def __init__(self, client):
