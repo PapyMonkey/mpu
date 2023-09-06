@@ -1,17 +1,22 @@
 import discord 
-from discord.ext import commands
+
 from utils.loader.config_loader import ConfigLoader
 from utils.loader.extension_loader import ExtensionLoader
+from utils.database import DBManager
+from utils.subclass.bot import CustomBot
 
-intents = discord.Intents.default()
-intents.members = True
-intents.message_content = True
+# intents = discord.Intents.default()
+# intents.members = True
+# intents.message_content = True
 
-iConfig = ConfigLoader()
-bot = commands.Bot(
-    command_prefix = iConfig.get_prefix(),
-    intents = intents
+aConfig = ConfigLoader()
+
+bot = CustomBot(
+    command_prefix = aConfig.get_prefix(),
+    intents = discord.Intents.default()
 )
+bot.database = DBManager()
+bot.config = aConfig
 
 @bot.event
 async def on_ready():
@@ -25,4 +30,4 @@ if (__name__ == '__main__'):
     aExtLoader = ExtensionLoader(bot)
     aExtLoader.load_extensions()
 
-bot.run(iConfig.get_access_token())
+bot.run(bot.config.get_access_token())
