@@ -1,10 +1,18 @@
 import discord
 from discord.ext import commands
+import utils.view.button as btn
 
 class TmpVocals(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    class TmpVocalsView(discord.ui.View):
+        def __init__(self):
+            super().__init__(
+                timeout=None
+            )
+            self.add_item(btn.ButtonRestrictUsersChannel())
+            self.add_item(btn.ButtonLimitNumberUserChannel())
     async def _tmp_vocal_create(
         self,
         member,
@@ -18,6 +26,7 @@ class TmpVocals(commands.Cog):
             self.bot.database.temporary_chan_insert(iParentChan, aNewTmpChanName.id)
             await member.move_to(aNewTmpChanName)
             await aNewTmpChanName.set_permissions(member, view_channel=True, manage_channels=True, manage_permissions=True, create_instant_invite=True, connect=True, speak=True, stream=True, use_voice_activation=True, priority_speaker=True, mute_members=True, deafen_members=True, move_members=True)
+            await aNewTmpChanName.send("**Channel settings** :", view=self.TmpVocalsView())
 
     async def _tmp_vocal_remove(
         self,
