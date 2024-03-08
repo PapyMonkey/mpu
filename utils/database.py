@@ -1,9 +1,11 @@
+import os
 import sqlite3
 
 class DBManager:
     def __init__(
         self,
         db_name:str='data/mpu_bot.db'):
+        os.makedirs(os.path.dirname(db_name), exist_ok=True)
         self.connect = sqlite3.connect(db_name)
         self.cursor = self.connect.cursor()
         self._initialize_tables()
