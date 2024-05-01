@@ -1,7 +1,6 @@
-name: Deploy in PRD
+name: Deploy in PRD phase
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
@@ -32,8 +31,16 @@ jobs:
         echo "$DEPLOY_SSH_KEY" > deploy_key
         chmod 600 deploy_key
 
+        # Create path if it does not exist
+        ssh -i deploy_key -p $SERVER_PORT -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "
+          mkdir -p $DEPLOY_PATH "
+
         # Use rsync to deploy the code to the server
-        rsync -avz -e "ssh -i deploy_key -p $SERVER_PORT -o StrictHostKeyChecking=no" --exclude '.git' --exclude 'deploy_key' ./ $SERVER_USER@$SERVER_IP:$DEPLOY_PATH
+        rsync \
+          -avz -e \
+          "ssh -i deploy_key -p $SERVER_PORT -o StrictHostKeyChecking=no" \
+          --exclude '.git' --exclude 'deploy_key' \
+          ./ $SERVER_USER@$SERVER_IP:$DEPLOY_PATH
 
         # Execute the Python script on the server
         ssh -i deploy_key -p $SERVER_PORT -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "
