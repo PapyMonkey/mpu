@@ -21,11 +21,11 @@ jobs:
 
     - name: Deploy, build and run Docker
       env:
-        DEPLOY_SSH_KEY: ${{ PRD.SSH_PRIVATE_KEY }}
-        SERVER_IP: ${{ PRD.SERVER_IP }}
-        SERVER_PORT: ${{ PRD.SERVER_PORT }}
-        SERVER_USER: ${{ PRD.SERVER_USER }}
-        DEPLOY_PATH: ${{ PRD.PATH }}
+        DEPLOY_SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        SERVER_IP: ${{ secrets.SERVER_IP }}
+        SERVER_PORT: ${{ secrets.SERVER_PORT }}
+        SERVER_USER: ${{ secrets.SERVER_USER }}
+        DEPLOY_PATH: ${{ secrets.PATH }}
       run: |
         # Write the SSH key to a file
         echo "$DEPLOY_SSH_KEY" > deploy_key
