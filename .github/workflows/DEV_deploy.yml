@@ -1,13 +1,13 @@
-name: Deploy in PRD
+name: Deploy in DEV phase
 
 on:
-  workflow_dispatch:
   push:
     branches:
-      - main
+      - DEV/**
 
 jobs:
   deploy:
+    environment: DEV
     runs-on: ubuntu-latest
 
     steps:
@@ -25,7 +25,7 @@ jobs:
         SERVER_IP: ${{ secrets.SERVER_IP }}
         SERVER_PORT: ${{ secrets.SERVER_PORT }}
         SERVER_USER: ${{ secrets.SERVER_USER }}
-        DEPLOY_PATH: ${{ secrets.PATH }}
+        DEPLOY_PATH: ${{ vars.PATH }}
       run: |
         # Write the SSH key to a file
         echo "$DEPLOY_SSH_KEY" > deploy_key
